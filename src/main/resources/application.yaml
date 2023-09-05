@@ -1,0 +1,24 @@
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:datajpa;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: username
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+
+app:
+  tollFreeVehicles: MOTORCYCLE,TRACTOR,EMERGENCY,DIPLOMA,FOREIGN,MILITARY
+  year: 2013
+  maxAmountPerDay: 60
+  maxOneChargeDuration: 60

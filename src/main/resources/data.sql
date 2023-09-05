@@ -1,0 +1,28 @@
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (6, 0, 6, 29, 2013, 8);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (6, 30, 6, 59, 2013, 13);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (7, 0, 7, 59, 2013, 18);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (8, 0, 8, 29, 2013, 13);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (8, 30, 14, 59, 2013, 8);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (15, 0, 15, 29, 2013, 13);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (15, 30, 16, 59, 2013, 18);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (17, 0, 17, 59, 2013, 13);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (18, 0, 18, 29, 2013, 8);
+INSERT INTO toll_fee (start_hour, start_minute, end_hour, end_minute, year_number, fee) VALUES (18, 30, 5, 59, 2013, 0);
+
+INSERT INTO holiday (month_number, day_number) VALUES (1, 1);
+INSERT INTO holiday (month_number, day_number) VALUES (3, 28);
+INSERT INTO holiday (month_number, day_number) VALUES (3, 29);
+INSERT INTO holiday (month_number, day_number) VALUES (4, 1);
+INSERT INTO holiday (month_number, day_number) VALUES (4, 30);
+INSERT INTO holiday (month_number, day_number) VALUES (5, 1);
+INSERT INTO holiday (month_number, day_number) VALUES (5, 8);
+INSERT INTO holiday (month_number, day_number) VALUES (5, 9);
+INSERT INTO holiday (month_number, day_number) VALUES (6, 5);
+INSERT INTO holiday (month_number, day_number) VALUES (6, 6);
+INSERT INTO holiday (month_number, day_number) VALUES (6, 21);
+INSERT INTO holiday (month_number, day_number) VALUES (7, 0);
+INSERT INTO holiday (month_number, day_number) VALUES (11, 1);
+INSERT INTO holiday (month_number, day_number) VALUES (12, 24);
+INSERT INTO holiday (month_number, day_number) VALUES (12, 25);
+INSERT INTO holiday (month_number, day_number) VALUES (12, 26);
+INSERT INTO holiday (month_number, day_number) VALUES (12, 31);
