@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.volvo.taxcalculator.exception.CustomProblemException.Problem.YEAR_NOT_FOUND;
 
@@ -40,7 +39,7 @@ public class TaxCalculatorServiceImpl implements TaxCalculatorService {
             tempDates.add(dates[i]);
 
 
-            if (i == dates.length - 1 || isDifferentDay(dates[i], dates[i+1])) {
+            if (i == dates.length - 1 || isDifferentDay(dates[i], dates[i + 1])) {
                 LocalDateTime[] dayDates = new LocalDateTime[tempDates.size()];
                 tempDates.toArray(dayDates);
 
@@ -54,36 +53,33 @@ public class TaxCalculatorServiceImpl implements TaxCalculatorService {
     }
 
     private int getTaxForOneDay(Vehicle vehicle, LocalDateTime[] dates) {
+        int oneChargeRuleDuration = config.getOneChargeRuleDuration();
         int maxAmount = config.getMaxAmountPerDay();
-        LocalDateTime intervalStart;
         int totalFee = 0;
+        LocalDateTime intervalStart = null;
+        int currentMaxFee = 0;
 
-        for (int i = 0; i < dates.length; i++) {
-            LocalDateTime date = dates[i];
+        for (LocalDateTime date : dates) {
+            int nextFee = getTollFee(date, vehicle);
 
-            if (i + 1 < dates.length) {
-                intervalStart = dates[i + 1];
-            } else {
+            if (intervalStart == null) {
                 intervalStart = date;
+                currentMaxFee = nextFee;
             }
 
-            int nextFee = getTollFee(date, vehicle);
-            int tempFee = getTollFee(intervalStart, vehicle);
+            long minutes = Duration.between(intervalStart, date).toMinutes();
 
-            Duration duration = Duration.between(date, intervalStart);
-            long minutes = duration.toMinutes();
-
-            if (minutes != 0 && minutes <= config.getOneChargeRuleDuration()) {
-                i++;
-                if (nextFee >= tempFee) tempFee = nextFee;
-                totalFee += tempFee;
+            if (minutes <= oneChargeRuleDuration) {
+                currentMaxFee = Math.max(currentMaxFee, nextFee);
             } else {
-                totalFee += nextFee;
+                totalFee += currentMaxFee;
+                intervalStart = date;
+                currentMaxFee = nextFee;
             }
         }
 
-        if (totalFee > maxAmount) totalFee = maxAmount;
-        return totalFee;
+        totalFee += currentMaxFee;
+        return Math.min(totalFee, maxAmount);
     }
 
     private boolean isTollFreeVehicle(Vehicle vehicle) {
@@ -114,11 +110,11 @@ public class TaxCalculatorServiceImpl implements TaxCalculatorService {
 
         return holidayService.findAll().stream()
                 .filter(holidayEntity -> holidayEntity.isHoliday(date))
-                .collect(Collectors.toList()).size() > 0;
-
+                .count() > 0;
     }
 
     private boolean isDifferentDay(LocalDateTime firstDay, LocalDateTime secondDay) {
         return !firstDay.toLocalDate().equals(secondDay.toLocalDate());
     }
+
 }

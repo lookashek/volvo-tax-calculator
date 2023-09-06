@@ -4,7 +4,6 @@ import com.volvo.taxcalculator.configuration.TaxCalculatorConfig;
 import com.volvo.taxcalculator.exception.CustomProblemException;
 import com.volvo.taxcalculator.model.HolidayEntity;
 import com.volvo.taxcalculator.model.TollFeeEntity;
-import com.volvo.taxcalculator.model.Vehicle;
 import com.volvo.taxcalculator.service.HolidayService;
 import com.volvo.taxcalculator.service.TollFeeService;
 import com.volvo.taxcalculator.service.impl.TaxCalculatorServiceImpl;
@@ -20,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.volvo.taxcalculator.exception.CustomProblemException.Problem.YEAR_NOT_FOUND;
 import static com.volvo.taxcalculator.model.Vehicle.CAR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -39,19 +37,38 @@ public class TaxCalculatorServiceImplTest {
     @InjectMocks
     private TaxCalculatorServiceImpl taxCalculatorService;
 
+    private static TollFeeEntity getTollFeeEntity() {
+        TollFeeEntity tollFeeEntity = new TollFeeEntity();
+        tollFeeEntity.setStartHour(6);
+        tollFeeEntity.setStartMinute(0);
+        tollFeeEntity.setEndHour(9);
+        tollFeeEntity.setEndMinute(0);
+        tollFeeEntity.setYear(2013);
+        tollFeeEntity.setFee(5);
+        return tollFeeEntity;
+    }
+
+    private static HolidayEntity getHolidayEntity() {
+        HolidayEntity holidayEntity = new HolidayEntity();
+        holidayEntity.setMonth(1);
+        holidayEntity.setDay(5);
+        return holidayEntity;
+    }
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testCalculateTaxForSingleDay() {
+    public void testCalculateTaxForOneHourDuration() {
         //given
         int maxAmount = 60;
         TollFeeEntity tollFeeEntity1 = getTollFeeEntity();
         LocalDateTime[] dates = {
                 LocalDateTime.parse("2013-02-08T06:27:00"),
-                LocalDateTime.parse("2013-02-08T06:20:00")
+                LocalDateTime.parse("2013-02-08T06:20:00"),
+                LocalDateTime.parse("2013-02-08T06:25:00")
         };
 
         when(config.getOneChargeRuleDuration()).thenReturn(maxAmount);
@@ -62,7 +79,7 @@ public class TaxCalculatorServiceImplTest {
         int tax = taxCalculatorService.calculateTax(CAR, dates);
 
         //then
-        assertEquals(50, tax);
+        assertEquals(5, tax);
     }
 
     @Test
@@ -92,24 +109,5 @@ public class TaxCalculatorServiceImplTest {
         //expect
         CustomProblemException customProblemException = Assertions.assertThrows(CustomProblemException.class, () -> taxCalculatorService.calculateTax(CAR, dates));
         assertEquals("Provided year not found: 2013", customProblemException.getMessage());
-    }
-
-
-    private static TollFeeEntity getTollFeeEntity() {
-        TollFeeEntity tollFeeEntity = new TollFeeEntity();
-        tollFeeEntity.setStartHour(6);
-        tollFeeEntity.setStartMinute(0);
-        tollFeeEntity.setEndHour(9);
-        tollFeeEntity.setEndMinute(0);
-        tollFeeEntity.setYear(2013);
-        tollFeeEntity.setFee(50);
-        return tollFeeEntity;
-    }
-
-    private static HolidayEntity getHolidayEntity() {
-        HolidayEntity holidayEntity = new HolidayEntity();
-        holidayEntity.setMonth(1);
-        holidayEntity.setDay(5);
-        return holidayEntity;
     }
 }
